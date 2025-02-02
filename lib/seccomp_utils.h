@@ -1,7 +1,10 @@
 #ifndef SECCOMPUTILS_H
 #define SECCOMPUTILS_H
 
-void seccompInit();
-void seccompAddRule();
+#include<bits/stdc++.h>
+using namespace std;
+
+bool seccompInit();
+bool  seccompAddRule(vector<string> &block_list);
 void seccompExit();
 #endif // SECCOMPUTILS_H

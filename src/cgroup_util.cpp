@@ -77,3 +77,14 @@ void cgroupMemRemove(string group_name)
 	}
 	cout << "cgroup " << group_name << " deleted" << endl;
 }
+
+bool set_mem_limit(string group_name, string in_bytes, string pid)
+{
+	if(!cgroupMemAdd(group_name))
+		return false;
+	if(!cgroupSetMemLimit(group_name, in_bytes))
+		return false;
+	if(!cgroupMemAddPid(group_name, pid))
+		return false;
+	return true;
+}
