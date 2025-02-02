@@ -53,7 +53,8 @@ int main(int argc, char* argv[])
 			perror("set_mem_limit Failed");
 		}
 
-		int result = system(bin_name.c_str());
+		string command = bin_name + " " + binary_arg;
+		int result = system(command.c_str());
 		if (result == -1)
 		{
 			std::cerr << "Failed to execute the binary" << std::endl;
