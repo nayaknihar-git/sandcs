@@ -48,28 +48,22 @@ int main(int argc, char* argv[])
 	{
 		seccompInit();
 		seccompAddRule(SANDBOX_SYSTEMCALLS);
-		string cur_pid = to_string(getpid());
-		if(!set_mem_limit(cgroup_name, no_bytes, cur_pid)) {
-			perror("set_mem_limit Failed");
-		}
-
-		string command = bin_name + " " + binary_arg;
-		int result = system(command.c_str());
-		if (result == -1)
-		{
-			std::cerr << "Failed to execute the binary" << std::endl;
-			seccompExit();
-			cgroupMemRemove(cgroup_name);
-			exit(EXIT_FAILURE);
-		}
-
-		seccompExit();
-		cgroupMemRemove(cgroup_name);
-		exit(EXIT_SUCCESS);
+		string command = bin_name + binary_arg; 
+		cout << "Starting process " << command << endl;
+		execl("/bin/sh", "sh", "-c", command.c_str(), (char*)NULL);
+		cout << bin_name << " Process creation Failed" << endl;
+		exit(EXIT_FAILURE);
 	}
 	else
 	{
 		int status;
+		if(!set_mem_limit(cgroup_name, no_bytes, to_string(pid)))
+		{
+			cgroupMemRemove(cgroup_name);
+			perror("set_mem_limit Failed");
+			exit(EXIT_FAILURE);
+		}
+
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status)) {
 		    cout << "Child exited with status: " << WEXITSTATUS(status) << endl;
@@ -82,5 +76,7 @@ int main(int argc, char* argv[])
 		}
 	}
 
+	cgroupMemRemove(cgroup_name);
+	exit(EXIT_SUCCESS);
 	return 0;
 }
