@@ -47,7 +47,8 @@ bool seccompAddRule(vector<string> &blocked_syscalls_list)
 			status = false;
 		}
 	}
-	cout << endl;
+	if (status)
+		status = seccomp_load(ctx);
 	return status;
 };
 
